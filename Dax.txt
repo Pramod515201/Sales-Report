@@ -1,0 +1,52 @@
+Dax For selecting diff colors for stacked "bars" in Format Visual--bars--fx--gradient--Rules--fields
+================================================================================
+Below Code for "Rules"
+===================
+Highlight Sales = 
+var H=MAXX(ALLSELECTED(Orders[City]),[TopNSalesbyCity])
+var L=MINX(ALLSELECTED(Orders[City]),[TopNSalesbyCity])
+
+var color=
+IF([TopNSalesbyCity]=H,1,
+IF([TopNSalesbyCity]=L,2,0))
+RETURN color
+
+Below Code for "Fields"
+=============================
+High-Low Color = 
+var H=MAXX(ALLSELECTED(Orders[City]),[TopNSalesbyCity])
+var L=MINX(ALLSELECTED(Orders[City]),[TopNSalesbyCity])
+var color=
+SWITCH(TRUE(),
+           [TopNSalesbyCity]=H,"DarkRed",
+           [TopNSalesbyCity]=L,"DarkBlue","LightGreen")
+           RETURN color
+
+============================================================
+BestProduct = 
+var TotalSales=[TotalSales]
+RETURN
+    CONCATENATEX(
+                 TOPN(3,
+                         FILTER('Product',[TotalSales]),[TotalSales]),
+                                                                   'Product'[Product],
+                                                                   UNICHAR(10),
+                                                                   [TotalSales],DESC)
+===============================================================
+Best_Selling_Day = 
+CONCATENATEX(TOPN(1,
+                   FILTER('Calendar',
+                            'Calendar'[Date]>=DATE(2011,01,01)&&'Calendar'[Date]<=DATE(2011,01,31)),
+                            [TotalSales]), 
+                            FORMAT('Calendar'[Date],"DD-MMM"))
+==================================================================================                   
+  Best Selling Month1 = 
+CONCATENATEX(
+             TOPN(
+                  1,
+                  FILTER(DATESBETWEEN('Calendar'[Date],MIN('Calendar'[Date]),MAX('Calendar'[Date])),
+                  [TotalSales]),
+                  [TotalSales]),
+                  FORMAT('Calendar'[Date],"MMMM")
+)                                                                 
+==========================================================================================
